@@ -9,15 +9,16 @@ namespace TAIO_MCGREGOR
 {
     class GraphReader
     {
-        public static void readArgs(string[] args, out int[,] G1, out int[,] G2)
+        public static void readArgs(string[] args, out int[,] G1, out int[,] G2, ref int opt)
         {
-            if (args.Length == 2)
+            if (args.Length >= 2)
             {
                 if (File.Exists(args[0]) && File.Exists(args[1]))
                 {
                     loadGraph(args[0], out G1);
                     loadGraph(args[1], out G2);
                     makeG1Smaller(ref G1, ref G2);
+                    if (args.Length == 3 && !int.TryParse(args[2], out opt)) throw new Exception();
                     return;
                 }
             }

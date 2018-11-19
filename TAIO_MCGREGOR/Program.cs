@@ -13,58 +13,38 @@ namespace TAIO_MCGREGOR
         {
             DateTime dt = DateTime.Now;
             int[,] G1 = null, G2 = null;
+            int option = 1;
             if (args.Any())
-                GraphReader.readArgs(args, out G1, out G2);
+                GraphReader.readArgs(args, out G1, out G2, ref option);
             else
             {
-                //G1 = new int[,] {
-                //{0,1,1,0 },
-                //{ 1,0,1,1},
-                //{1,1,0,1 },
-                //{0,1,1,0 }};
-                //G2 = new int[,] {
-                //{0,1,1,0 },
-                //{ 1,0,0,1},
-                //{1,0,0,1 },
-                //{0,1,1,0 }};
-                //G1 = new int[,] {
-                //    {0, 1,0,0 },
-                //    { 1,0,1,1},
-                //    {0,1,0,1 },
-                //    {0,1,1,0 }};
-                //G2 = new int[,] {
-                //    {0,1,1,0 },
-                //    { 1,0,0,1},
-                //    {1,0,0,1 },
-                //    {0,1,1,0 }};
                 G1 = new int[,] {
-                    { 0,1,0,0,1 },
-                    { 1,0,1,0,0 },
-                    { 0,1,0,1,0 },
-                    { 0,0,1,0,1 },
-                    { 1,0,0,1,0 } };
+                    { 0,1,0,1,0,1,0,0 },
+                    { 1,0,1,1,0,1,1,1 },
+                    { 0,1,0,1,0,0,0,0 },
+                    { 1,1,1,0,1,1,0,1 },
+                    { 0,0,0,1,0,1,0,0 },
+                    { 1,1,0,1,1,0,1,0 },
+                    { 0,1,0,0,0,1,0,0 },
+                    { 0,1,0,1,0,0,0,0 }};
                 G2 = new int[,] {
-                    { 0,1,0,0,1 },
-                    { 1,0,1,0,0 },
-                    { 0,1,0,1,0 },
-                    { 0,0,1,0,1 },
-                    { 1,0,0,1,0 } };
+                    { 0,1,0,1,0,0,0,0 },
+                    { 1,0,1,1,0,1,1,1 },
+                    { 0,1,0,1,0,0,0,0 },
+                    { 1,1,1,0,1,1,0,1 },
+                    { 0,0,0,1,0,1,0,0 },
+                    { 0,1,0,1,1,0,1,0 },
+                    { 0,1,0,0,0,1,0,0 },
+                    { 0,1,0,1,0,0,0,0 } };
             }
             Console.Write(Graph.convertFromMatrix(G1));
             Console.Write(Graph.convertFromMatrix(G2));
             State s = new State();
-            //for(int i=0;i<G1.GetLength(0);i++)
-            //{
-            //    Console.Write("VERTICEL = {0}\n",firstNeighbour(s, G1));
-            //    s.correspondingVerticles.Add(new Tuple<int, int>(i, 2));
-            //}
-            //SolutionV.McGregor(new State(), G1, G2, ref s);
-            //Console.Write(s);
-            s = new State();
-            int maxScore = getMaxScore(G1, G2);
-            Console.WriteLine("Max Score = {0}", maxScore);
-            SolutionE.McGregor(new State(), G1, G2, ref s, maxScore);
-            Console.Write("{0} \n {1}",s ,s.countOfTrackedEdges);
+            if(option == 1)
+                SolutionV.McGregor(new State(), G1, G2, ref s);
+            else if(option == 2)
+                SolutionE.McGregor(new State(), G1, G2, ref s);
+            Console.Write(s);
 
         }
 
@@ -75,7 +55,7 @@ namespace TAIO_MCGREGOR
         
         public static int firstNeighbour(State s, int[,] G1)
         {
-            int v1 = 0;
+            int v1 = -1;
             bool selected = false;
             bool contains = false;
             if (s.correspondingVerticles.Count - s.countOfNullNodes != 0)
@@ -83,6 +63,7 @@ namespace TAIO_MCGREGOR
                 //wez sasiada pierwszego lepszego
                 foreach (var el in s.correspondingVerticles)
                 {
+                    if (el.Item2 == -1) continue;
                     for (int i = 0; i < G1.GetLength(0); i++)
                     {
                         if (G1[i, el.Item1] == 1)
@@ -107,6 +88,25 @@ namespace TAIO_MCGREGOR
                     }
                     if (selected)
                         break;
+                }
+            }
+            else
+            {
+
+                for (int i = 0; i < G1.GetLength(0); i++)
+                {
+                    foreach (var el in s.correspondingVerticles)
+                        if (el.Item1 == i)
+                        {
+                            contains = true;
+                            break;
+                        }
+                    if(!contains)
+                    {
+                        v1 = i;
+                        break;
+                    }
+                    contains = false;
                 }
             }
             return v1;

@@ -8,39 +8,33 @@ namespace TAIO_MCGREGOR
 {
     class SolutionE
     {   
-        public static void McGregor(State s, int[,] G1, int[,] G2, ref State max, int maxScore)
+        public static void McGregor(State s, int[,] G1, int[,] G2, ref State max)
         {
             int count = 0;
             int v1 = Program.firstNeighbour(s, G1);
-            foreach (var pair in Program.nextPair(s, v1, G2))
-            {
-                if (pair == null) break;
-                v1 = pair.Item1;
-                //Console.Write("Try pair [{0},{1}]", pair.Item1, pair.Item2);
-                if (isFeasiblePair(s, pair, G1, G2, ref count)) //positive count guarantees cohesion
+            if(v1 != -1)
+                foreach (var pair in Program.nextPair(s, v1, G2))
                 {
-                    //Console.WriteLine(" correct! {0}", s.correspondingVerticles.Count - s.countOfNullNodes);
-                    s.AddNewPair(pair.Item1, pair.Item2, count);
-                    checkMax(s, ref max);
-                    if (!Program.LeafOfSearchTree(s, G1.GetLength(0)) /*&& !PruningCondition(s, max, maxScore)*/)
-                        McGregor(s, G1, G2, ref max, maxScore);
-                    //else
-                    //{
-                    //    if (LeafOfSearchTree(s, G1.GetLength(0)))
-                    //        Console.WriteLine("leaf");
-                    //    else
-                    //        Console.WriteLine("no chance");
-                    //}
-                    s.Backtrack(count);
+                    if (pair == null) break;
+                    v1 = pair.Item1;
+                    //Console.Write("Try pair [{0},{1}]", pair.Item1, pair.Item2);
+                    if (isFeasiblePair(s, pair, G1, G2, ref count)) //positive count guarantees cohesion
+                    {
+                        //Console.WriteLine(" correct! {0}", s.correspondingVerticles.Count - s.countOfNullNodes);
+                        s.AddNewPair(pair.Item1, pair.Item2, count);
+                        checkMax(s, ref max);
+                        if (!Program.LeafOfSearchTree(s, G1.GetLength(0)) /*&& !PruningCondition(s, max, maxScore)*/)
+                            McGregor(s, G1, G2, ref max);
+                        s.Backtrack(count);
+                    }
+                    else
+                        Console.WriteLine("");
+                    count = 0;
                 }
-                else
-                    Console.WriteLine("");
-                count = 0;
-            }
             //case with null node
             s.AddNewPair(v1, -1, 0);
-            if (!Program.LeafOfSearchTree(s, G1.GetLength(0)) && !PruningCondition(s, max, maxScore))
-                McGregor(s, G1, G2, ref max, maxScore);
+            if (!Program.LeafOfSearchTree(s, G1.GetLength(0)))
+                McGregor(s, G1, G2, ref max);
             s.Backtrack(0);
         }
         private static bool isFeasiblePair(State s, Tuple<int, int> pair, int[,] G1, int[,] G2, ref int countOfEdges)
@@ -60,15 +54,11 @@ namespace TAIO_MCGREGOR
                         {
                             //we can immediately add to State s
                             s.correspondingEdges.Add(new Tuple<Edge, Edge>(new Edge(el.Item1, pair.Item1), new Edge(el.Item2, pair.Item2)));
-                            //listOfEdges.Add(new Tuple<Edge, Edge>(new Edge(el.Item1, pair.Item1), new Edge(el.Item2, pair.Item2)));
                             count++;
                         }
                     }
                     s.countOfTrackedEdges++;
                 }
-            //}
-            //foreach (var el in listOfEdges)
-            //    s.correspondingEdges.Add(el);
             countOfEdges = count;
             return true;
         }
@@ -77,10 +67,6 @@ namespace TAIO_MCGREGOR
             if (s.correspondingVerticles.Count - s.countOfNullNodes + s.correspondingEdges.Count 
                 > max.correspondingVerticles.Count - max.countOfNullNodes + max.correspondingEdges.Count)
                 max = s.Copy();
-        }
-        private static bool PruningCondition(State s, State max, int limit)
-        {
-            return limit - s.countOfTrackedEdges + s.correspondingEdges.Count <= max.correspondingEdges.Count;
         }
     }
 }

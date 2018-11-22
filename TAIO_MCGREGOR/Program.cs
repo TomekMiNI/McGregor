@@ -39,21 +39,28 @@ namespace TAIO_MCGREGOR
             }
             Console.Write(Graph.convertFromMatrix(G1));
             Console.Write(Graph.convertFromMatrix(G2));
-            State s = new State();
-            if(option == 1)
-                SolutionV.McGregor(new State(), G1, G2, ref s);
-            else if(option == 2)
-                SolutionE.McGregor(new State(), G1, G2, ref s);
+            State s = new State(G1,G2);
+            Console.Write("V Solution\n");
+
+            //if(option==1)
+            SolutionV.McGregor(new State(G1,G2), ref s);
+            Console.Write(s);
+            s = new State(G1, G2);
+            Console.Write("V+E Solution\n");
+            SolutionV.McGregor(new State(G1, G2), ref s, 1);
+            //else if(option == 2)
+            //    SolutionE.McGregor(new State(G2,G2),ref s);
             Console.Write(s);
 
         }
 
-        public static bool LeafOfSearchTree(State s, int limit)
+        public static bool LeafOfSearchTree(State s)
         {
+            int limit = s.G1.GetLength(0);
             return s.correspondingVerticles.Count >= limit;
         }
         
-        public static int firstNeighbour(State s, int[,] G1)
+        public static int firstNeighbour(State s)
         {
             int v1 = -1;
             bool selected = false;
@@ -64,9 +71,9 @@ namespace TAIO_MCGREGOR
                 foreach (var el in s.correspondingVerticles)
                 {
                     if (el.Item2 == -1) continue;
-                    for (int i = 0; i < G1.GetLength(0); i++)
+                    for (int i = 0; i < s.G1.GetLength(0); i++)
                     {
-                        if (G1[i, el.Item1] == 1)
+                        if (s.G1[i, el.Item1] == 1)
                         {
                             foreach (var el2 in s.correspondingVerticles)
                                 if (el2.Item1 == i)
@@ -93,7 +100,7 @@ namespace TAIO_MCGREGOR
             else
             {
 
-                for (int i = 0; i < G1.GetLength(0); i++)
+                for (int i = 0; i < s.G1.GetLength(0); i++)
                 {
                     foreach (var el in s.correspondingVerticles)
                         if (el.Item1 == i)
@@ -111,11 +118,11 @@ namespace TAIO_MCGREGOR
             }
             return v1;
         }
-        public static IEnumerable<Tuple<int,int>> nextPair(State s, int v1, int[,] G2)
+        public static IEnumerable<Tuple<int,int>> nextPair(State s, int v1)
         {
             
             bool used = false;
-            for(int i=0;i<G2.GetLength(0);i++)
+            for(int i=0;i<s.G2.GetLength(0);i++)
             {
                 foreach (Tuple<int, int> el in s.correspondingVerticles)
                         if (el.Item2 == i) //used

@@ -33,7 +33,7 @@ namespace TAIO_MCGREGOR
                         {
                             checkMax(s, ref max);
                             if (!Program.LeafOfSearchTree(s) && !PruningCondition(s, max))
-                                McGregor(s, ref max, option);
+                                McGregor(s, ref max);
                         }
                             s.Backtrack(count);
                     }
@@ -41,7 +41,8 @@ namespace TAIO_MCGREGOR
                 }
             //case with null node
             s.AddNewPair(v1, -1, 0);
-            if (!Program.LeafOfSearchTree(s) && !PruningCondition(s, max))
+            if (!Program.LeafOfSearchTree(s))
+                if(option == 1 || !PruningCondition(s, max))
                 McGregor(s, ref max, option);
             s.Backtrack(0);
         }

@@ -13,7 +13,7 @@ namespace TAIO_MCGREGOR
         {
             DateTime dt = DateTime.Now;
             int[,] G1 = null, G2 = null;
-            int option = 1;
+            int option = 0;
             if (args.Any())
                 GraphReader.readArgs(args, out G1, out G2, ref option);
             else
@@ -37,20 +37,24 @@ namespace TAIO_MCGREGOR
                     { 0,1,0,0,0,1,0,0 },
                     { 0,1,0,1,0,0,0,0 } };
             }
-            Console.Write(Graph.convertFromMatrix(G1));
-            Console.Write(Graph.convertFromMatrix(G2));
+            //Console.Write(Graph.convertFromMatrix(G1));
+            //Console.Write(Graph.convertFromMatrix(G2));
             State s = new State(G1,G2);
             Console.Write("V Solution\n");
 
-            //if(option==1)
-            SolutionV.McGregor(new State(G1,G2), ref s);
-            Console.Write(s);
-            s = new State(G1, G2);
-            Console.Write("V+E Solution\n");
-            SolutionV.McGregor(new State(G1, G2), ref s, 1);
-            //else if(option == 2)
-            //    SolutionE.McGregor(new State(G2,G2),ref s);
-            Console.Write(s);
+            if (option == 0)
+            {
+                SolutionV.McGregor(new State(G1, G2), ref s);
+                Console.Write(s);
+                s = new State(G1, G2);
+                
+            }
+            else
+            {
+                Console.Write("V+E Solution\n");
+                SolutionV.McGregor(new State(G1, G2), ref s, 1);
+                Console.Write(s);
+            }
 
         }
 

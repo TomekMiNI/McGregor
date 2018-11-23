@@ -91,34 +91,58 @@ namespace TAIO_MCGREGOR
             }
             sb.AppendLine(sb1.ToString());
             sb.AppendLine(sb2.ToString());
+            //for (int i = 0; i < G1.GetLength(0); i++)
+            //{
+            //    for (int j = 0; j < G1.GetLength(0); j++)
+            //    {
+            //        //if (G1[i, j] == 2)
+            //        //{
+            //        //    Font nF = new Font("1",8,FontStyle.Bold);
+            //        //    sb.AppendFormat("1",nF);
+            //        //}
+            //        //else
+            //            sb.Append(String.Format(G1[i, j] + " "));
+            //    }
+            //    sb.Append("\n");
+            //}
+            //sb.Append("\n");
             for (int i = 0; i < G1.GetLength(0); i++)
             {
                 for (int j = 0; j < G1.GetLength(0); j++)
                 {
-                    //if (G1[i, j] == 2)
-                    //{
-                    //    Font nF = new Font("1",8,FontStyle.Bold);
-                    //    sb.AppendFormat("1",nF);
-                    //}
-                    //else
-                        sb.Append(String.Format(G1[i, j] + " "));
+                    if (G1[i, j] == 2)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.Write("1");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.Write(" ");
+                    }
+                    else
+                        Console.Write(G1[i, j] + " ");
                 }
-                sb.Append("\n");
+                Console.Write("\n");
             }
-            sb.Append("\n");
+            Console.Write("\n");
             for (int i = 0; i < G2.GetLength(0); i++)
             {
                 for (int j = 0; j < G2.GetLength(0); j++)
                 {
-                    
-                    //if (G2[i, j] == 2)
-                    //{
-                    //    sb.Append("<b>1</b>");
-                    //}
-                    //else
-                        sb.Append(String.Format(G2[i, j] + " "));
+
+                    if (G2[i, j] == 2)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Console.Write("1");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.Write(" ");
+                    }
+                    else
+                        Console.Write(G2[i, j] + " ");
                 }
-                sb.Append("\n");
+                Console.Write("\n");
             }
             return sb.ToString();
         }
